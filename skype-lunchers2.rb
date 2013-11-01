@@ -19,11 +19,12 @@ def pokebattle(chat,body,user)
   #fill team arrays
   until pokes>5
     select = (rand()*lines.length).to_i
-    temp = lines[select].match /([a-zA-Z])(.*\(.*\)|\w*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)/
+    temp = lines[select].match /([a-zA-Z])(r\.\s\w*|.*\(.*\)|\w*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)/
     team1 << [($1.to_s+$2.to_s),$16.to_i]
     lines.delete_at(select)
 
-    temp = lines[select].match /([a-zA-Z])(.*\(.*\)|\w*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)/
+    select = (rand()*lines.length).to_i
+    temp = lines[select].match /([a-zA-Z])(r\.\s\w*|.*\(.*\)|\w*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)/
     team2 << [($1.to_s+$2.to_s),$16.to_i]
     lines.delete_at(select)
     pokes+=1
