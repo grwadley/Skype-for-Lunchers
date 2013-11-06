@@ -158,10 +158,23 @@ def pokemonLimit(chat,body)
   chat.post message
 end
 
+def champions(chat)
+  message = "[Skype Bot]  Trainers who have defeated the Elite Four and Gary: "
+  lines = IO.readlines("champions")
+  lines.each do |name|
+    message+= "[ (*) "+name.to_s+"]"
+  end
+  chat.post message
+end
+
+def gary(chat)
+  message = "[Skype Bot] Gary Wins! Smell Ya Later!"
+  chat.post message
+end
 
 #print the possible commands
 def commands(chat)
-  chat.post "[Skype Bot]  Commands: dominion, lux, scoreboard, pokemon (optional #), roll, pokebattle (opponent)"
+  chat.post "[Skype Bot]  Commands: dominion, lux, scoreboard, pokemon (optional #), roll, pokebattle (opponent), champions"
 end
 
 ###
@@ -206,21 +219,23 @@ Thread.new do
       if m.time > runTime
         next unless last_id < m.id
         puts m
-        if(m.body=~/^help$/)
+        if(m.body=~/^help$/i)
           commands(chat)
-        elsif(m.body=~/^roll$/)
+        elsif(m.body=~/^roll$/i)
           roll(chat,m.user)
-        elsif(m.body=~/^pokebattle \w*$/)
+        elsif(m.body=~/^champions$/i)
+          champions(chat)
+        elsif(m.body=~/^pokebattle \w*$/i)
           pokebattle(chat,m.body,m.user)
-        elsif(m.body=~/^dominion$/)
+        elsif(m.body=~/^dominion$/i)
           dominion(chat)
-        elsif(m.body=~/^lux$/)
+        elsif(m.body=~/^lux$/i)
           lux(chat)
-        elsif(m.body=~/^scoreboard$/)
+        elsif(m.body=~/^scoreboard$/i)
           scoreboard(chat)
-        elsif(m.body=~/^pokemon$/)
+        elsif(m.body=~/^pokemon$/i)
           pokemon(chat)
-        elsif(m.body=~/^pokemon \d*$/)
+        elsif(m.body=~/^pokemon \d*$/i)
           pokemonLimit(chat, m.body)
         end
         last_id = m.id
