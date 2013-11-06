@@ -14,3 +14,4 @@ All functionality it currently in skype-lunchers2.rb, external data is in text f
 
 This code is based on a public ruby gem. Its contents and documentation can be found here
 http://rubygems.org/gems/skype
+It is required to run the bot, as the bot makes use of the wrapper commands.
