@@ -17,7 +17,7 @@ def pokebattle(chat,body,user)
 
   pokes = 0
   select = 0
-  #fill team arrays
+  #fill team arrays using incredibly ugly regexcham
   until pokes>5
     select = (rand()*lines.length).to_i
     temp = lines[select].match /([a-zA-Z])(r\.\s\w*|\w*-\w*|.*\(.*\)|\w*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)(\s*)(\d*)/
@@ -64,7 +64,8 @@ end
 
 #Generates a random deck of dominion cards from a local textfile. This one has some complicated regex because the formats are all strange
 #Regex is used to pull the necessary values from each line.
-def dominion(chat)
+def dominion(chat)  board = []
+  cardCost = "";
   cards = 0;
   select = 0;
   line = "[Skype Bot]  ";
@@ -74,10 +75,22 @@ def dominion(chat)
   until cards > 9 do
     cards+=1
     select = (rand() * lines_array.length).to_i
-    temp = lines_array[select].match /(^\w*)(\s)(\w*|\w*.*\w*)(\s)(\$\d)/
-    line+=("["+$1+" "+$3+" "+$5+"]")
+    temp = lines_array[select].match /(^\w.*?)(\s)(\$\d+)/
+    board << [$1,$3]
     lines_array.delete_at(select)
   end
+
+  board = board.sort{|a,b| b[1] <=>a[1]}
+  board.each do |card|
+    if(card[1]==cardCost)
+      line+="["+card.to_s+"]"
+    else
+      line+= "\n"+"["+card.to_s+"]"
+      cardCost = card[1]
+    end
+    #line+="\t\t\t"
+  end
+
   chat.post line
 end
 
