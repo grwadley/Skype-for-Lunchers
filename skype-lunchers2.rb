@@ -41,6 +41,7 @@ def pokebattle(chat,body,user)
     messageP1 += " "+pokemon[0].to_s
     sum1 += pokemon[1].to_i
   end
+
   temp = body.match /(\w*)(\s)(\w*)/
   player2 = $3.to_s
   messageP2= "["+player2+"'s team: ]"
@@ -48,6 +49,7 @@ def pokebattle(chat,body,user)
     messageP2 += " "+pokemon[0].to_s
     sum2 += pokemon[1].to_i
   end
+
   #Post the results
   chat.post messageP1+ " [Total: "+ sum1.to_s+"]"
   chat.post messageP2+ " [Total: "+ sum2.to_s+"]"
@@ -160,10 +162,10 @@ def pokemonLimit(chat,body)
 end
 
 def champions(chat)
-  message = "[Skype Bot]  Trainers who have defeated the Elite Four and Champion: "
+  message = "[Skype Bot]  Trainers who have defeated the Elite Four and Champion: \n"
   lines = IO.readlines("champions")
   lines.each do |name|
-    message+= "[ (*) "+name.to_s+"]"
+    message+= "[ (*) "+name.to_s.strip+"]\n"
   end
   chat.post message
 end
