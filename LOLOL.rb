@@ -4,8 +4,8 @@ $:.unshift File.expand_path '../lib', File.dirname(__FILE__)
 require 'skype'
 
 def lolol(chat,body,user)
-  message = "[Skype Bot]  "
-  message += ((user.to_s)+" said: \" "+(body.to_s)+"\""+"\n HAHAHAHAHA")
+  message = "[Quote Bot]  "
+  message += ((user.to_s)+" said: \" "+(body.to_s)+"\""+"\n")
   chat.post message
 end
 
@@ -51,8 +51,10 @@ Thread.new do
       if m.time > runTime
         next unless last_id < m.id
         puts m
-        unless(m.body=~/^\[Skype Bot\]/)
-          lolol(chat,m.body,m.user)
+        unless(m.body=~/^\[Quote Bot\]/)
+          unless(m.body=~/\d\d\.\d\d/)
+           # lolol(chat,m.body,m.user)
+          end
         end
         last_id = m.id
       end

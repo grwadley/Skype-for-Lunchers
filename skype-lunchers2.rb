@@ -59,6 +59,9 @@ def pokebattle(chat,body,user)
     chat.post "Draw!"
   else
     chat.post player2+" wins!"
+    #if(player2=~/^lorelei$/i)
+     # chat.post "http://i.imgflip.com/4tjpx.jpg"
+    #end
   end
 end
 
@@ -81,17 +84,44 @@ def dominion(chat)  board = []
   end
 
   board = board.sort{|a,b| b[1] <=>a[1]}
+  #Add special symbols
   board.each do |card|
-    if(card[1]==cardCost)
-      line+="["+card.to_s+"]"
-    else
-      line+= "\n"+"["+card.to_s+"]"
-      cardCost = card[1]
-    end
-    #line+="\t\t\t"
+    card[0]= card[0].sub(/\W*/,"")
+    card[0]= card[0].sub(/\s–\s/,"")
+    card[0]= card[0].sub(/Action/,"(→) ")
+    card[0]= card[0].sub(/Attack/,"(⚔) ")
+    card[0]= card[0].sub(/Treasure/,"( $) ")
+    card[0]= card[0].sub(/Victory/,"(♕) ")
+    card[0]= card[0].sub(/Duration/,"(∞) ")
+    card[0]= card[0].sub(/Reaction/,"(⟲) ")
   end
 
+
+  board.each do |card|
+    if(card[1]==cardCost)
+      line+="["+card[0].to_s+"]"
+    else
+      line+= "\n"+"["+card[1].to_s+"]["+card[0].to_s+"]"
+      cardCost = card[1]
+    end
+    line+="\t"
+  end
+  dominionKingdom = board
   chat.post line
+end
+
+def dominionLinks(chat)
+  puts 'here'
+  dominionKingdom.each do |card|
+    puts card
+  end
+end
+
+def dominionLink(chat,body)
+  temp = body.match /(dominion)(\s)(\w*)/
+  card = $3
+  message = "http://wiki.dominionstrategy.com/index.php/"+card.downcase
+  chat.post message
 end
 
 #Simple die roll function. Takes the username from the message to tell who rolled
@@ -111,13 +141,18 @@ end
 #Prints the dominion scoreboard. This is currently stored locally in a text file.
 #sort is only on wins. A star is printed beside the names of the leader(s)
 def scoreboard(chat)
-  scores = []
+   scores = []
   lines = IO.readlines("scoreboard")
-  message = "[Skype Bot]  [Dominion Wins]"
+  winners = IO.readlines("winners")
+  message = "[Skype Bot]  [Winners] "
+  winners.each do |line|
+    message+="["+line+"] "
+  end
+  message+="\n[Current Scores] "
   temp = ""
   max = 0
   lines.each do |line|
-    temp = line.match /(.*:)(\s)(\d)/
+    temp = line.match /(.*:)(\s)(-\d*|\d*)/
     if $3.to_i > max
       max = $3.to_i
     end
@@ -200,6 +235,8 @@ end
 runTime = Time.new
 puts runTime
 
+dominionKingdom  = []
+
 puts "skype rubygem v#{Skype::VERSION}"
 
 chats = Skype.chats
@@ -245,6 +282,10 @@ Thread.new do
           pokebattle(chat,m.body,m.user)
         elsif(m.body=~/^dominion$/i)
           dominion(chat)
+        elsif(m.body=~/^dominion links$/)
+          dominionLinks(chat)
+        elsif(m.body=~/^dominion \w*$/i)
+          dominionLink(chat,m.body)
         elsif(m.body=~/^lux$/i)
           lux(chat)
         elsif(m.body=~/^scoreboard$/i)
